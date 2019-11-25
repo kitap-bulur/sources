@@ -6,7 +6,7 @@ class V2Controller extends ApiController {
 
   public function require_login() {
     if (isset($_POST["appkey"])) {
-      if ($_POST["appkey"] != "159654kafkef") {
+      if ($_POST["appkey"] != "********") {
         $json = self::_query_json_template(500, "Parola yanlış!");
         return $this->render(["text" => $json], ["content_type" => "application/json"]);
       }
