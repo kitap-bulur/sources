@@ -87,13 +87,13 @@ class HbController extends V4Controller {
       array(
         "http" => array(
           "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
-          )
         )
-      );
+      )
+    );
 
     $file = file_get_contents($query_url, false, $context);
-    preg_match_all("'<div class=\"box product  hb-placeholder\" data-bind=\"(.*?)\">\s*<a href=\"(.*?)\"'si", $file, $links);
-    $_links = $links[2];
+    preg_match_all("'<div class=\"box product(.*?)hb-placeholder\" data-bind=\"(.*?)\">\s*<a href=\"(.*?)\"'si", $file, $links);
+    $_links = $links[3];
 
     preg_match_all("'<div class=\"carousel-lazy-item\">\s*<img src=\'(.*?)\'\s*class=\"product-image owl-lazy hidden\"  alt=\"(.*?)\"\s*.*?\s*/>'si", $file, $cards);
     $_names = $cards[2];
@@ -102,46 +102,89 @@ class HbController extends V4Controller {
     foreach ($_links as $i => $value)
       $_links[$i] = "https://www.hepsiburada.com" . $value;
 
-    preg_match_all("'<div class=\"badge highlight discount-badge\">\s*<small>%</small><span>(.*?)</span>\s*</div>\s*<del class=\"price old product-old-price\">(.*?)</del>\s*<span class=\"price old product-old-price\" style=\"text-decoration: none;\">(.*?)</span>'si", $file, $prices);
+    preg_match_all("'<div class=\"price-container(.*?)\">(.*?)<div class=\"badge-container\">'si", $file, $all_prices);
+    $_all_prices = $all_prices[2];
 
-    if (!empty($prices[0])) {
-      $_prices_percent = $prices[1];
-      $_prices = $prices[2];
-      $_prices_old = $prices[3];
+    $_prices = [];
+    $_prices_old = [];
+    $_prices_percent = [];
+    foreach ($_all_prices as $key => $value) {
 
-      foreach ($_prices_old as $i => $value) {
-        $_prices_old[$i] = preg_replace("/[^0-9,.|]/", "", $_prices_old[$i]);
+      preg_match_all("'<div class=\"badge highlight discount-badge\">\s*<small>%</small><span>(.*?)</span>\s*</div>\s*<del class=\"price old product-old-price\">(.*?)</del>\s*<span class=\"price old product-old-price\" style=\"text-decoration: none;\">(.*?)</span>'si", $value, $output);
+
+      if (isset($output[0][0])) {
+        $_prices_percent[] = $output[1][0];
+        $_prices_old[] = $output[2][0];
+        $_prices[] = $output[3][0];
+        continue;
       }
-    } else {
-      preg_match_all("'<span class=\"price product-price\">(.*?)</span>'si", $file, $prices);
-      $_prices = $prices[1];
-      $_prices_percent = NULL;
-      $_prices_old = NULL;
+
+      preg_match_all("'<div class=\"badge highlight discount-badge\">\s*<small>%</small><span>(.*?)</span>\s*</div>\s*<del class=\"price old product-old-price\">(.*?)</del>\s*<span class=\"price product-price\">(.*?)</span>\s*</div>'si", $value, $output);
+
+      if (isset($output[0][0])) {
+        $_prices_percent[] = $output[1][0];
+        $_prices_old[] = $output[2][0];
+        $_prices[] = $output[3][0];
+        continue;
+      }
+
+      preg_match_all("'<span class=\"price product-price\">(.*?)</span>'si", $value, $output);
+
+      if (isset($output[0][0])) {
+        $_prices_percent[] = NULL;
+        $_prices_old[] = NULL;
+        $_prices[] = $output[1][0];
+        continue;
+      }
     }
 
     foreach ($_prices as $i => $value) {
       $_prices[$i] = preg_replace("/[^0-9,.|]/", "", $_prices[$i]);
+      $_prices_old[$i] = preg_replace("/[^0-9,.|]/", "", $_prices_old[$i]);
+
     }
 
-    preg_match_all("'<label for=\"attr-satici-(.*?)\" data-bind=\"(.*?)\">(.*?)\s*<span>(.*?)</span>\s*</label>'si", $file, $publishers);
-    $_publishers = $publishers[3];
+    preg_match_all("'<div class=\"badge-container\">(.*?)</div>\s*</a>\s*</div>'si", $file, $all_publishers_and_authors);
+    $_all_publishers_and_authors = $all_publishers_and_authors[1];
 
-    preg_match_all("'<label for=\"attr-yazar-(.*?)\" data-bind=\"(.*?)\">(.*?)\s*<span>(.*?)</span>\s*</label>'si", $file, $authors);
-    $_authors = $authors[3];
+    $_publishers = [];
+    $_authors = [];
+
+    foreach ($_all_publishers_and_authors as $key => $value) {
+
+      preg_match_all("'brandName&quot;:&quot;(.*?)&quot;,&quot;'si", $value, $output);
+
+      if (isset($output[0][0])) {
+        $_publishers[] = $output[1][0];
+      } else {
+        $_publishers[] = NULL;
+      }
+
+/*
+      preg_match_all("'merchantName&quot;:&quot;(.*?)&quot;,&quot;'si", $value, $output);
+     if (isset($output[0][0])) {
+        $_authors[] = $output[1][0];
+      } else {
+        $_authors[] = NULL;
+      }
+*/
+      $_authors[] = NULL;
+
+    }
 
     if (isset($_names[0])) {
 
       $datas = [];
       foreach ($_names as $i => $value) {
         $datas[] = [
-        "name" => $_names[$i],
-        "price" => $_prices[$i],
-        "price_old" => $_prices_old[$i],
-        "price_percent" => $_prices_percent[$i],
-        "image" => $_images[$i],
-        "link" => $_links[$i],
-        "publisher" => trim($_publishers[$i]),
-        "author" => trim($_authors[$i])
+          "name" => $_names[$i],
+          "price" => $_prices[$i],
+          "price_old" => $_prices_old[$i],
+          "price_percent" => $_prices_percent[$i],
+          "image" => $_images[$i],
+          "link" => $_links[$i],
+          "publisher" => trim($_publishers[$i]),
+          "author" => trim($_authors[$i])
         ];
       }
 
@@ -158,9 +201,9 @@ class HbController extends V4Controller {
       array(
         "http" => array(
           "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
-          )
         )
-      );
+      )
+    );
 
     $file = file_get_contents($query_url, false, $context);
     preg_match_all("'<div class=\"carousel-lazy-item\">\s*<img src=\'(.*?)\'\s*class=\"product-image owl-lazy hidden\"\s*alt=\"(.*?)\"\s*title=\"(.*?)\"'mi", $file, $cards);
@@ -186,14 +229,14 @@ class HbController extends V4Controller {
 
     // preg_match_all("'<div class=\"badge highlight discount-badge\">\s*<small>%</small><span>(.*?)</span>\s*</div>\s*<del class=\"price old product-old-price\">(.*?)</del>\s*<span class=\"price product-price\">(.*?)</span>'mi", $file, $prices);
 
-    preg_match_all("'</h3>\s*(.*?)\s*<span class=\"title small placeholder\"></span>'si", $file, $prices_all);
-    $_prices_all = $prices_all[1];
+    preg_match_all("'</h3>\s*(.*?)\s*<span class=\"title small placeholder\"></span>'si", $file, $all_prices);
+    $_all_prices = $all_prices[1];
 
     $_prices_old = [];
     $_prices = [];
     $_prices_percent = [];
 
-    foreach ($_prices_all as $key => $value) {
+    foreach ($_all_prices as $key => $value) {
 
       preg_match_all("'<div class=\"badge highlight discount-badge\">\s*<small>%</small><span>(.*?)</span>\s*</div>\s*<del class=\"price old product-old-price\">(.*?)</del>\s*<span class=\"price product-price\">(.*?)</span>\s*</div>'si", $value, $output);
 
@@ -235,14 +278,14 @@ class HbController extends V4Controller {
       $datas = [];
       foreach ($_names as $i => $value) {
         $datas[] = [
-        "name" => $_names[$i],
-        "price" => $_prices[$i],
-        "price_old" => $_prices_old[$i],
-        "price_percent" => $_prices_percent[$i],
-        "image" => $_images[$i],
-        "link" => $_links[$i],
-        "publisher" => $_publishers[$i],
-        "author" => trim($_authors[$i])
+          "name" => $_names[$i],
+          "price" => $_prices[$i],
+          "price_old" => $_prices_old[$i],
+          "price_percent" => $_prices_percent[$i],
+          "image" => $_images[$i],
+          "link" => $_links[$i],
+          "publisher" => $_publishers[$i],
+          "author" => trim($_authors[$i])
         ];
       }
 
