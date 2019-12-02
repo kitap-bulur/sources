@@ -32,8 +32,8 @@ class IsbnController extends V4Controller {
     }
 
     $post_text = $_POST["text"];
-    $post_text = preg_replace("/ /", "%20", $post_text);
-    $data = self::_cache_search("https://isbnsearch.org/search?s=" . $post_text);
+    $post_text = urlencode($post_text);
+    $data = self::_cache_search("https://www.kitapyurdu.com/index.php?route=product/search&filter_name=" . $post_text);
 
     if ($data) {
       $json = self::_query_json_template(200, "Başarılı istek", $data);
@@ -50,24 +50,32 @@ class IsbnController extends V4Controller {
       array(
         "http" => array(
           "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
-          )
         )
-      );
+      )
+    );
 
     $file = file_get_contents($query_url, false, $context);
 
-    //$file = file_get_contents($query_url);
+    preg_match_all("'<a href=\"(.*?)\"  >\s*<img itemprop=\"image\"  src=\"(.*?)\" alt=\"(.*?)\" /></a>'mi", $file, $cards);
 
-    preg_match_all("'<div class=\"image\">\s*<a href=\"(.*?)\"><img src=\"(.*?)\" alt=\"(.*?)\"></a>\s*</div>'mi", $file, $cards);
-
+    $_links = $cards[1];
     $_images = $cards[2];
     $_names = $cards[3];
 
-    preg_match_all("'<p>Author: (.*?)</p>'si", $file, $authors);
-    $_authors = $authors[1];
+    preg_match_all("'<span itemprop=\"publisher\" itemscope itemtype=\"http://schema.org/Organization\"><a itemprop=\"url\" class=\"alt\" href=\"(.*?)\"><span itemprop=\"name\">\s*(.*?)</span></a>'si", $file, $publishers);
 
-    preg_match_all("'<p>ISBN-13: (.*?)</p>'si", $file, $barcodes);
+    $_publishers = $publishers[2];
+
+    preg_match_all("'<div class=\"author\">Yazar : <span itemscope itemtype=\"http://schema.org/Person\" itemprop=\"author\"><a itemprop=\"url\"  class=\"alt\" href=\"(.*?)\"> <span itemprop=\"name\">\s*(.*?)</span></a>'si", $file, $authors);
+
+    $_authors = $authors[2];
+
+    preg_match_all("'<meta itemprop=\"isbn\" content=\"(.*?)\" />'si", $file, $barcodes);
+
     $_barcodes = $barcodes[1];
+    foreach ($_barcodes as $key => $value) {
+      $_barcodes[$key] = "978" . $value;
+    }
 
     if (isset($_names[0])) {
 
@@ -77,6 +85,7 @@ class IsbnController extends V4Controller {
           "name" => $_names[$i],
           "image" => $_images[$i],
           "author" => $_authors[$i],
+          "publishers" => $_authors[$i],
           "barcode" => $_barcodes[$i]
         ];
       }
@@ -90,4 +99,3 @@ class IsbnController extends V4Controller {
   }
 }
 ?>
-
