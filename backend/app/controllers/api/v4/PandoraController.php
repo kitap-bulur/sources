@@ -3,7 +3,7 @@
 class PandoraController extends V4Controller {
 
   private static function _cache_search($query_url) {
-    $cache_name = "DR_SEARCH_" . $query_url;
+    $cache_name = "Pandora_search_" . $query_url;
 
     if (ApplicationCache::exists("$cache_name")) {
 
@@ -25,7 +25,7 @@ class PandoraController extends V4Controller {
   }
 
   private static function _cache_bests($query_url) {
-    $cache_name = "DR_BESTS_" . $query_url;
+    $cache_name = "Pandora_bests_" . $query_url;
 
     if (ApplicationCache::exists("$cache_name")) {
 
@@ -44,6 +44,48 @@ class PandoraController extends V4Controller {
     }
 
     return $data;
+  }
+
+  private static function _cache_detail($query_url) {
+    $cache_name = "Nobelkitap_detail_" . $query_url;
+
+    if (ApplicationCache::exists("$cache_name")) {
+
+      $data = ApplicationCache::read("$cache_name");
+
+    } else {
+      // text search, fetch [data, data] or NULL
+
+      $data = self::_query_detail($query_url);
+
+      if ($data) {
+        ;// ApplicationCache::write("$cache_name", $data);
+      } else {
+        return NULL;
+      }
+    }
+
+    return $data;
+  }
+
+  public function detail() {
+
+    if (!isset($_POST["link"])) {
+      $json = self::_query_json_template(429, "Verilerde eksiklik var!");
+      return $this->render(["text" => $json], ["content_type" => "application/json"]);
+    }
+
+    $post_link = $_POST["link"];
+
+    $data = self::_cache_detail($post_link);
+
+    if ($data) {
+      $json = self::_query_json_template(200, "Başarılı istek", $data);
+      return $this->render(["text" => $json], ["content_type" => "application/json"]);
+    } else {
+      $json = self::_query_json_template(404, "Üzgünüm aradığım kaynaklarımda ürününüzü bulamadım.");
+      return $this->render(["text" => $json], ["content_type" => "application/json"]);
+    }
   }
 
   public function news() {
@@ -82,14 +124,25 @@ class PandoraController extends V4Controller {
     }
   }
 
+  private static function _query_detail($query_url) {
+    $file = file_get_contents($query_url);
+
+    preg_match_all("'<p>ISBN: (.*?)</p>'si", $file, $barcode);
+    $_barcode = $barcode[1];
+
+    return [
+      "barcode" => $_barcode
+    ];
+  }
+
   private static function _query_search($query_url) {
     $context = stream_context_create(
       array(
         "http" => array(
           "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
-          )
         )
-      );
+      )
+    );
 
     $file = file_get_contents($query_url, false, $context);
 
@@ -121,14 +174,14 @@ class PandoraController extends V4Controller {
       $datas = [];
       foreach ($_names as $i => $value) {
         $datas[] = [
-        "name" => $_names[$i],
-        "price" => $_prices[$i],
-        "price_old" => $_prices_old[$i],
-        "price_percent" => $_prices_percent[$i],
-        "image" => $_images[$i],
-        "link" => $_links[$i],
-        "publisher" => $_publishers[$i],
-        "author" => $_authors[$i]
+          "name" => $_names[$i],
+          "price" => $_prices[$i],
+          "price_old" => $_prices_old[$i],
+          "price_percent" => $_prices_percent[$i],
+          "image" => $_images[$i],
+          "link" => $_links[$i],
+          "publisher" => $_publishers[$i],
+          "author" => $_authors[$i]
         ];
       }
 
@@ -144,9 +197,9 @@ class PandoraController extends V4Controller {
       array(
         "http" => array(
           "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
-          )
         )
-      );
+      )
+    );
 
     $file = file_get_contents($query_url, false, $context);
 
@@ -185,14 +238,14 @@ class PandoraController extends V4Controller {
       $datas = [];
       foreach ($_names as $i => $value) {
         $datas[] = [
-        "name" => $_names[$i],
-        "price" => $_prices[$i],
-        "price_old" => $_prices_old[$i],
-        "price_percent" => $_prices_percent[$i],
-        "image" => $_images[$i],
-        "link" => $_links[$i],
-        "publisher" => $_publishers[$i],
-        "author" => $_authors[$i]
+          "name" => $_names[$i],
+          "price" => $_prices[$i],
+          "price_old" => $_prices_old[$i],
+          "price_percent" => $_prices_percent[$i],
+          "image" => $_images[$i],
+          "link" => $_links[$i],
+          "publisher" => $_publishers[$i],
+          "author" => $_authors[$i]
         ];
       }
 
