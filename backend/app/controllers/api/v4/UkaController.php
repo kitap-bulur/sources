@@ -3,7 +3,7 @@
 class UkaController extends V4Controller {
 
   private static function _cache_search($query_url) {
-    $cache_name = "DR_SEARCH_" . $query_url;
+    $cache_name = "Uka_search_" . $query_url;
 
     if (ApplicationCache::exists("$cache_name")) {
 
@@ -22,6 +22,48 @@ class UkaController extends V4Controller {
     }
 
     return $data;
+  }
+
+  private static function _cache_detail($query_url) {
+    $cache_name = "Uka_detail_" . $query_url;
+
+    if (ApplicationCache::exists("$cache_name")) {
+
+      $data = ApplicationCache::read("$cache_name");
+
+    } else {
+      // text search, fetch [data, data] or NULL
+
+      $data = self::_query_detail($query_url);
+
+      if ($data) {
+        ;// ApplicationCache::write("$cache_name", $data);
+      } else {
+        return NULL;
+      }
+    }
+
+    return $data;
+  }
+
+  public function detail() {
+
+    if (!isset($_POST["link"])) {
+      $json = self::_query_json_template(429, "Verilerde eksiklik var!");
+      return $this->render(["text" => $json], ["content_type" => "application/json"]);
+    }
+
+    $post_link = $_POST["link"];
+
+    $data = self::_cache_detail($post_link);
+
+    if ($data) {
+      $json = self::_query_json_template(200, "Başarılı istek", $data);
+      return $this->render(["text" => $json], ["content_type" => "application/json"]);
+    } else {
+      $json = self::_query_json_template(404, "Üzgünüm aradığım kaynaklarımda ürününüzü bulamadım.");
+      return $this->render(["text" => $json], ["content_type" => "application/json"]);
+    }
   }
 
   public function news() {
@@ -58,6 +100,18 @@ class UkaController extends V4Controller {
       $json = self::_query_json_template(404, "Üzgünüm aradığım kaynaklarımda ürününüzü bulamadım.");
       return $this->render(["text" => $json], ["content_type" => "application/json"]);
     }
+  }
+
+
+  private static function _query_detail($query_url) {
+    $file = file_get_contents($query_url);
+
+    preg_match_all("'<div class=\"urun-isbn\">(.*?)</div>'si", $file, $barcode);
+    $_barcode = $barcode[1];
+
+    return [
+      "barcode" => $_barcode
+    ];
   }
 
   private static function _query_search($query_url) {
