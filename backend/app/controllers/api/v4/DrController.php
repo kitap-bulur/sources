@@ -3,7 +3,7 @@
 class DrController extends V4Controller {
 
   private static function _cache_search($query_url) {
-    $cache_name = "DR_SEARCH_" . $query_url;
+    $cache_name = "Dr_search_" . $query_url;
 
     if (ApplicationCache::exists("$cache_name")) {
 
@@ -25,7 +25,7 @@ class DrController extends V4Controller {
   }
 
   private static function _cache_bests($query_url) {
-    $cache_name = "DR_BESTS_" . $query_url;
+    $cache_name = "Dr_bests_" . $query_url;
 
     if (ApplicationCache::exists("$cache_name")) {
 
@@ -44,6 +44,48 @@ class DrController extends V4Controller {
     }
 
     return $data;
+  }
+
+  private static function _cache_detail($query_url) {
+    $cache_name = "Dr_detail_" . $query_url;
+
+    if (ApplicationCache::exists("$cache_name")) {
+
+      $data = ApplicationCache::read("$cache_name");
+
+    } else {
+      // text search, fetch [data, data] or NULL
+
+      $data = self::_query_detail($query_url);
+
+      if ($data) {
+        ;// ApplicationCache::write("$cache_name", $data);
+      } else {
+        return NULL;
+      }
+    }
+
+    return $data;
+  }
+
+  public function detail() {
+
+    if (!isset($_POST["link"])) {
+      $json = self::_query_json_template(429, "Verilerde eksiklik var!");
+      return $this->render(["text" => $json], ["content_type" => "application/json"]);
+    }
+
+    $post_link = $_POST["link"];
+
+    $data = self::_cache_detail($post_link);
+
+    if ($data) {
+      $json = self::_query_json_template(200, "Başarılı istek", $data);
+      return $this->render(["text" => $json], ["content_type" => "application/json"]);
+    } else {
+      $json = self::_query_json_template(404, "Üzgünüm aradığım kaynaklarımda ürününüzü bulamadım.");
+      return $this->render(["text" => $json], ["content_type" => "application/json"]);
+    }
   }
 
   public function news() {
@@ -80,6 +122,17 @@ class DrController extends V4Controller {
       $json = self::_query_json_template(404, "Üzgünüm aradığım kaynaklarımda ürününüzü bulamadım.");
       return $this->render(["text" => $json], ["content_type" => "application/json"]);
     }
+  }
+
+  private static function _query_detail($query_url) {
+    $file = file_get_contents($query_url);
+
+    preg_match_all("'<li>Barkod: (.*?)</li>\s*</ul>\s*<div class=\"social\">'si", $file, $barcode);
+    $_barcode = $barcode[1];
+
+    return [
+      "barcode" => $_barcode
+    ];
   }
 
   private static function _query_search($query_url) {
@@ -127,14 +180,14 @@ class DrController extends V4Controller {
       $datas = [];
       foreach ($_names as $i => $value) {
         $datas[] = [
-        "name" => $_names[$i],
-        "price" => $_prices[$i],
-        "price_old" => $_prices_old[$i],
-        "price_percent" => $_prices_percent[$i],
-        "image" => $_images[$i],
-        "link" => $_links[$i],
-        "publisher" => $_publishers[$i],
-        "author" => $_authors[$i]
+          "name" => $_names[$i],
+          "price" => $_prices[$i],
+          "price_old" => $_prices_old[$i],
+          "price_percent" => $_prices_percent[$i],
+          "image" => $_images[$i],
+          "link" => $_links[$i],
+          "publisher" => $_publishers[$i],
+          "author" => $_authors[$i]
         ];
       }
 
@@ -191,14 +244,14 @@ class DrController extends V4Controller {
       $datas = [];
       foreach ($_names as $i => $value) {
         $datas[] = [
-        "name" => $_names[$i],
-        "price" => $_prices[$i],
-        "price_old" => $_prices_old[$i],
-        "price_percent" => $_prices_percent[$i],
-        "image" => $_images[$i],
-        "link" => $_links[$i],
-        "publisher" => $_publishers[$i],
-        "author" => $_authors[$i]
+          "name" => $_names[$i],
+          "price" => $_prices[$i],
+          "price_old" => $_prices_old[$i],
+          "price_percent" => $_prices_percent[$i],
+          "image" => $_images[$i],
+          "link" => $_links[$i],
+          "publisher" => $_publishers[$i],
+          "author" => $_authors[$i]
         ];
       }
 
