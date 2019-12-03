@@ -15,68 +15,88 @@ ApplicationRoutes::draw(function() {
       post("app/news", "app#news");
       post("app/tops", "app#tops");
       post("app/search", "app#search");
+      post("app/detail", "app#detail");
       /* --- */
-      post("isbn/search", "isbn#search");
       post("app/all_news", "app#all_news");
       post("app/all_tops", "app#all_tops");
       post("app/all_search", "app#all_search");
       /* --- */
       /* --- */
+
       post("dr/news", "dr#news");
       post("dr/tops", "dr#tops");
       post("dr/search", "dr#search");
+      post("dr/detail", "dr#detail");
 
       post("idefix/news", "idefix#news");
       post("idefix/tops", "idefix#tops");
       post("idefix/search", "idefix#search");
-
-      post("hb/news", "hb#news");
-      post("hb/tops", "hb#tops");
-      post("hb/search", "hb#search");
+      post("idefix/detail", "idefix#detail");
 
       post("pandora/news", "pandora#news");
       post("pandora/tops", "pandora#tops");
       post("pandora/search", "pandora#search");
+      post("pandora/detail", "pandora#detail");
 
       post("kidega/news", "kidega#news");
       post("kidega/tops", "kidega#tops");
       post("kidega/search", "kidega#search");
+      post("kidega/detail", "kidega#detail");
 
       post("bkm/news", "bkm#news");
       post("bkm/tops", "bkm#tops");
       post("bkm/search", "bkm#search");
+      post("bkm/detail", "bkm#detail");
 
       post("kitapsec/news", "kitapsec#news");
       post("kitapsec/tops", "kitapsec#tops");
       post("kitapsec/search", "kitapsec#search");
+      post("kitapsec/detail", "kitapsec#detail");
 
       post("uka/news", "uka#news");
       post("uka/tops", "uka#tops");
       post("uka/search", "uka#search");
+      post("uka/detail", "uka#detail");
 
       post("amazon/news", "amazon#news");
       post("amazon/tops", "amazon#tops");
       post("amazon/search", "amazon#search");
+      post("amazon/detail", "amazon#detail");
 
       post("koala/news", "koala#news");
       post("koala/tops", "koala#tops");
       post("koala/search", "koala#search");
+      post("koala/detail", "koala#detail");
 
       post("nobelkitap/news", "nobelkitap#news");
       post("nobelkitap/tops", "nobelkitap#tops");
       post("nobelkitap/search", "nobelkitap#search");
-
-      post("babil/news", "babil#news");
-      post("babil/tops", "babil#tops");
-      post("babil/search", "babil#search");
+      post("nobelkitap/detail", "nobelkitap#detail");
 
       post("kitapsihirbazi/news", "kitapsihirbazi#news");
       post("kitapsihirbazi/tops", "kitapsihirbazi#tops");
       post("kitapsihirbazi/search", "kitapsihirbazi#search");
+      post("kitapsihirbazi/detail", "kitapsihirbazi#detail");
 
       post("pelikankitabevi/news", "pelikankitabevi#news");
       post("pelikankitabevi/tops", "pelikankitabevi#tops");
       post("pelikankitabevi/search", "pelikankitabevi#search");
+      post("pelikankitabevi/detail", "pelikankitabevi#detail");
+
+      post("hb/news", "hb#news");
+      post("hb/tops", "hb#tops");
+      post("hb/search", "hb#search");
+      post("hb/detail", "hb#detail");
+
+      post("okuoku/news", "okuoku#news");
+      post("okuoku/tops", "okuoku#tops");
+      post("okuoku/search", "okuoku#search");
+      post("okuoku/detail", "okuoku#detail");
+
+      post("babil/news", "babil#news");
+      post("babil/tops", "babil#tops");
+      post("babil/search", "babil#search");
+      post("babil/detail", "babil#detail");
     });
   });
 
