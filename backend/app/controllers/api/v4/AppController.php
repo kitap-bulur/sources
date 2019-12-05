@@ -43,7 +43,7 @@ class AppController extends V4Controller {
       "id" => "6",
       "name" => "Ucuz Kitap Al",
       "image" => "http://www.akgenseeds.com/app/assets/img/8.png",
-      "subname" => "uka"
+      "subname" => "ucuzkitapal"
     ],
     [
       "id" => "7",
