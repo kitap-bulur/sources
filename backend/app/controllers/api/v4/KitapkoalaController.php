@@ -1,6 +1,6 @@
 <?php
 
-class KoalaController extends V4Controller {
+class KitapkoalaController extends V4Controller {
 
   private static function _cache_search($query_url) {
     $cache_name = "Koala_search_" . $query_url;
