@@ -43,10 +43,10 @@ ApplicationRoutes::draw(function() {
       post("kidega/search", "kidega#search");
       post("kidega/detail", "kidega#detail");
 
-      post("bkm/news", "bkm#news");
-      post("bkm/tops", "bkm#tops");
-      post("bkm/search", "bkm#search");
-      post("bkm/detail", "bkm#detail");
+      post("bkmkitap/news", "bkmkitap#news");
+      post("bkmkitap/tops", "bkmkitap#tops");
+      post("bkmkitap/search", "bkmkitap#search");
+      post("bkmkitap/detail", "bkmkitap#detail");
 
       post("kitapsec/news", "kitapsec#news");
       post("kitapsec/tops", "kitapsec#tops");
