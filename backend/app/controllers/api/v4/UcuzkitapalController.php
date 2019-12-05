@@ -1,6 +1,6 @@
 <?php
 
-class UkaController extends V4Controller {
+class UcuzkitapalController extends V4Controller {
 
   private static function _cache_search($query_url) {
     $cache_name = "Uka_search_" . $query_url;
