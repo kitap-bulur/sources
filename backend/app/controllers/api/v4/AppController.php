@@ -55,7 +55,7 @@ class AppController extends V4Controller {
       "id" => "8",
       "name" => "Kitap Koala",
       "image" => "http://www.akgenseeds.com/app/assets/img/10.png",
-      "subname" => "koala"
+      "subname" => "kitapkoala"
     ],
     [
       "id" => "9",
