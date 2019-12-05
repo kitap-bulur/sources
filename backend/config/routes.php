@@ -63,10 +63,10 @@ ApplicationRoutes::draw(function() {
       post("amazon/search", "amazon#search");
       post("amazon/detail", "amazon#detail");
 
-      post("koala/news", "koala#news");
-      post("koala/tops", "koala#tops");
-      post("koala/search", "koala#search");
-      post("koala/detail", "koala#detail");
+      post("kitapkoala/news", "kitapkoala#news");
+      post("kitapkoala/tops", "kitapkoala#tops");
+      post("kitapkoala/search", "kitapkoala#search");
+      post("kitapkoala/detail", "kitapkoala#detail");
 
       post("nobelkitap/news", "nobelkitap#news");
       post("nobelkitap/tops", "nobelkitap#tops");
