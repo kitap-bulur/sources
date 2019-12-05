@@ -1,6 +1,6 @@
 <?php
 
-class BkmController extends V4Controller {
+class BkmkitapController extends V4Controller {
 
   private static function _cache_search($query_url) {
     $cache_name = "Bkm_search_" . $query_url;
