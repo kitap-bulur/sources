@@ -53,10 +53,10 @@ ApplicationRoutes::draw(function() {
       post("kitapsec/search", "kitapsec#search");
       post("kitapsec/detail", "kitapsec#detail");
 
-      post("uka/news", "uka#news");
-      post("uka/tops", "uka#tops");
-      post("uka/search", "uka#search");
-      post("uka/detail", "uka#detail");
+      post("ucuzkitapal/news", "ucuzkitapal#news");
+      post("ucuzkitapal/tops", "ucuzkitapal#tops");
+      post("ucuzkitapal/search", "ucuzkitapal#search");
+      post("ucuzkitapal/detail", "ucuzkitapal#detail");
 
       post("amazon/news", "amazon#news");
       post("amazon/tops", "amazon#tops");
