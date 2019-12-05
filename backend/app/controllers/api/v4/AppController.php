@@ -29,13 +29,13 @@ class AppController extends V4Controller {
     ],
     [
       "id" => "4",
-      "name" => "Bkm",
+      "name" => "Bkm Kitap",
       "image" => "http://www.akgenseeds.com/app/assets/img/6.png",
-      "subname" => "bkm"
+      "subname" => "bkmkitap"
     ],
     [
       "id" => "5",
-      "name" => "Kitapsec",
+      "name" => "Kitap seç",
       "image" => "http://www.akgenseeds.com/app/assets/img/7.png",
       "subname" => "kitapsec"
     ],
