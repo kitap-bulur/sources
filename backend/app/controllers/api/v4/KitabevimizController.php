@@ -1,9 +1,9 @@
 <?php
 
-class PelikankitabeviController extends V4Controller {
+class KitabevimizController extends V4Controller {
 
   private static function _cache_search($query_url) {
-    $cache_name = "Pelikankitabevi_search_" . $query_url;
+    $cache_name = "Kitabevimiz_search_" . $query_url;
 
     if (ApplicationCache::exists("$cache_name")) {
 
@@ -25,7 +25,7 @@ class PelikankitabeviController extends V4Controller {
   }
 
   private static function _cache_bests($query_url) {
-    $cache_name = "Pelikankitabevi_bests_" . $query_url;
+    $cache_name = "Kitabevimiz_bests_" . $query_url;
 
     if (ApplicationCache::exists("$cache_name")) {
 
@@ -47,7 +47,7 @@ class PelikankitabeviController extends V4Controller {
   }
 
   private static function _cache_detail($query_url) {
-    $cache_name = "Pelikankitabevi_detail_" . $query_url;
+    $cache_name = "Kitabevimiz_detail_" . $query_url;
 
     if (ApplicationCache::exists("$cache_name")) {
 
@@ -90,7 +90,7 @@ class PelikankitabeviController extends V4Controller {
 
   public function news() {
 
-    $data = self::_cache_bests("https://www.pelikankitabevi.com.tr/yeni-cikanlar");
+    $data = self::_cache_bests("https://www.kitabevimiz.com/yeni-cikanlar");
 
     $json = self::_query_json_template(200, "En Yeniler", $data);
     return $this->render(["text" => $json], ["content_type" => "application/json"]);
@@ -98,7 +98,7 @@ class PelikankitabeviController extends V4Controller {
 
   public function tops() {
 
-    $data = self::_cache_bests("https://www.pelikankitabevi.com.tr/en-cok-satanlar");
+    $data = self::_cache_bests("https://www.kitabevimiz.com/cok-satanlar");
 
     $json = self::_query_json_template(200, "En Gözdeler", $data);
     return $this->render(["text" => $json], ["content_type" => "application/json"]);
@@ -113,7 +113,7 @@ class PelikankitabeviController extends V4Controller {
 
     $post_text = $_POST["text"];
     $post_text = preg_replace("/ /", "%20", $post_text);
-    $data = self::_cache_search("https://www.pelikankitabevi.com.tr/index.php?p=Products&q_field_active=0&ctg_id=&q=" . $post_text);
+    $data = self::_cache_search("https://www.kitabevimiz.com/index.php?p=Products&q_field_active=0&ctg_id=&q=" . $post_text . "&search=&q_field=");
 
     if ($data) {
       $json = self::_query_json_template(200, "Başarılı istek", $data);
@@ -131,9 +131,16 @@ class PelikankitabeviController extends V4Controller {
     $_barcode = $barcode[1];
 
     return [
-      "barcode" => $_barcode
+    "barcode" => $_barcode
     ];
   }
+
+//   private static function _query_search($query_url) {
+
+//     $file = file_get_contents($query_url);
+
+//     preg_match_all("'<img id=\"main_img\" class=\"tooltipx prd_img prd_view_img\" width=\"300\" height=\"300\" src=\"(.*?)\"'si", $file, $images);
+//     $_images = $images[1];
 
   private static function _query_search($query_url) {
 
@@ -197,14 +204,14 @@ class PelikankitabeviController extends V4Controller {
       $datas = [];
       foreach ($_names as $i => $value) {
         $datas[] = [
-          "name" => $_names[$i],
-          "price" => $_prices[$i],
-          "price_old" => $_prices_old[$i],
-          "price_percent" => $_prices_percent[$i],
-          "image" => $_images[$i],
-          "link" => $_links[$i],
-          "publisher" => $_publishers[$i],
-          "author" => $_authors[$i]
+        "name" => $_names[$i],
+        "price" => $_prices[$i],
+        "price_old" => $_prices_old[$i],
+        "price_percent" => $_prices_percent[$i],
+        "image" => $_images[$i],
+        "link" => $_links[$i],
+        "publisher" => $_publishers[$i],
+        "author" => $_authors[$i]
         ];
       }
 
@@ -220,10 +227,10 @@ class PelikankitabeviController extends V4Controller {
 
     $file = file_get_contents($query_url);
 
-    preg_match_all("'<a title=\"(.*?)\"\s*class=\"tooltip-ajax\"\s*href=\"(.*?)\">\s*<img class=\"prd_img prd_img_(.*?)\" width=\"100\" height=\"100\" src=\"(.*?)\" data-src=\"(.*?)\" alt=\"(.*?)\" title=\"(.*?)\" />'mi", $file, $cards);
+    preg_match_all("'<a title=\"(.*?)\"  class=\"tooltip-ajax\" href=\"(.*?)\">\s*<img class=\"prd_img (.*?) (.*?)\" width=\"100\" height=\"100\" src=\"(.*?)\" data-src=\"(.*?)\" alt=\"(.*?)\" title=\"(.*?)\" />\s*</a>\s*<noscript>'mi", $file, $cards);
     $_names = $cards[1];
     $_links = $cards[2];
-    $_images = $cards[5];
+    $_images = $cards[4];
 
     preg_match_all("'<div class=\"prd_info\">(.*?)<div class=\"publisher\">'si", $file, $all_authors);
     $_all_authors = $all_authors[1];
@@ -231,51 +238,52 @@ class PelikankitabeviController extends V4Controller {
     $_authors = [];
     foreach ($_all_authors as $key => $value) {
 
-     preg_match_all("'<div class=\"writer\"><a href=\"(.*?)\">(.*?)</a></div>'si", $value, $output);
+      preg_match_all("'<div class=\"writer\"><a href=\"(.*?)\">(.*?)</a></div>'si", $value, $output);
 
-     if (!isset($output[0][0])) {
-       $_authors[$key] = NULL;
-     } else {
-      $_authors[$key] = $output[2][0];
+      if (!isset($output[0][0])) {
+        $_authors[$key] = NULL;
+      } else {
+        $_authors[$key] = $output[2][0];
+      }
     }
-  }
 
-  preg_match_all("'<div class=\"publisher\"><a href=\"(.*?)\">(.*?)</a></div>'si", $file, $publisher);
-  $_publishers = $publisher[2];
+    preg_match_all("'<div class=\"publisher\"><a href=\"(.*?)\">(.*?)</a></div>'si", $file, $publisher);
+    $_publishers = $publisher[2];
 
-  preg_match_all("'<span class=\"price price_sale convert_cur\" data-price=\"(.*?)\" data-cur-code=\"(.*?)\">'si", $file, $prices);
-  $_prices = $prices[1];
+    preg_match_all("'<span class=\"price price_sale convert_cur\" data-price=\"(.*?)\" data-cur-code=\"(.*?)\">'si", $file, $prices);
+    $_prices = $prices[1];
 
-  preg_match_all("'<span class=\"price price_list convert_cur\" data-price=\"(.*?)\" data-cur-code=\"(.*?)\">'si", $file, $prices_old);
-  $_prices_old = $prices_old[1];
+    preg_match_all("'<span class=\"price price_list convert_cur\" data-price=\"(.*?)\" data-cur-code=\"(.*?)\">'si", $file, $prices_old);
 
-  foreach ($_prices_old as $key => $value) {
+    $_prices_old = $prices_old[1];
 
-    if ($value == $_prices[$key]) {
-      $_prices_old[$key] = NULL;
+    foreach ($_prices_old as $key => $value) {
+
+      if ($value =="0.00") {
+        $_prices_old[$key] = NULL;
+      }
     }
-  }
 
-  preg_match_all("'<div class=\"image_container\">(.*?)<div class=\"prd_info\">'si", $file, $all_prices_percent);
-  $_all_prices_percent = $all_prices_percent[1];
+    preg_match_all("'<div class=\"image_container\">(.*?)<div class=\"prd_info\">'si", $file, $all_prices_percent);
+    $_all_prices_percent = $all_prices_percent[1];
 
-  $_prices_percent = [];
-  foreach ($_all_prices_percent as $key => $value) {
+    $_prices_percent = [];
+    foreach ($_all_prices_percent as $key => $value) {
 
-    preg_match_all("'<div class=\"discount\"><sub>%</sub>(.*?)</div>'si", $value, $output);
+      preg_match_all("'<div class=\"discount\"><sub>%</sub>(.*?)</div>'si", $value, $output);
 
-    if (!empty($output[0][0])) {
-      $_prices_percent[$key] = preg_replace("/[^0-9,.|]/", "", $output[1][0]);
-    } else {
-      $_prices_percent[$key] = NULL;
+      if (!empty($output[0][0])) {
+        $_prices_percent[$key] = preg_replace("/[^0-9,.|]/", "", $output[1][0]);
+      } else {
+        $_prices_percent[$key] = NULL;
+      }
     }
-  }
 
-  if (isset($_names[0])) {
+    if (isset($_names[0])) {
 
-    $datas = [];
-    foreach ($_names as $i => $value) {
-      $datas[] = [
+      $datas = [];
+      foreach ($_names as $i => $value) {
+        $datas[] = [
         "name" => $_names[$i],
         "price" => $_prices[$i],
         "price_old" => $_prices_old[$i],
@@ -284,15 +292,15 @@ class PelikankitabeviController extends V4Controller {
         "link" => $_links[$i],
         "publisher" => $_publishers[$i],
         "author" => $_authors[$i]
-      ];
+        ];
+      }
+
+      $data = $datas;
+    } else {
+      $data = NULL;
     }
 
-    $data = $datas;
-  } else {
-    $data = NULL;
+    return $data;
   }
-
-  return $data;
-}
 }
 ?>

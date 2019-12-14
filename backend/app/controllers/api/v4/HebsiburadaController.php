@@ -1,6 +1,6 @@
 <?php
 
-class HbController extends V4Controller {
+class HepsiburadaController extends V4Controller {
 
   private static function _cache_search($query_url) {
     $cache_name = "Hb_search_" . $query_url;

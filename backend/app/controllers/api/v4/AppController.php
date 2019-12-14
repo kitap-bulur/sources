@@ -5,81 +5,87 @@ class AppController extends V4Controller {
   const SERVICES = [
     [
       "id" => "0",
-      "name" => "D&R Store",
-      "image" => "http://www.akgenseeds.com/app/assets/img/1.png",
-      "subname" => "dr"
-    ],
-    [
-      "id" => "1",
-      "name" => "Idefix",
-      "image" => "http://www.akgenseeds.com/app/assets/img/3.png",
-      "subname" => "idefix"
-    ],
-    [
-      "id" => "2",
-      "name" => "Pandora",
-      "image" => "http://www.akgenseeds.com/app/assets/img/4.png",
-      "subname" => "pandora"
-    ],
-    [
-      "id" => "3",
-      "name" => "Kidega",
-      "image" => "http://www.akgenseeds.com/app/assets/img/5.png",
-      "subname" => "kidega"
-    ],
-    [
-      "id" => "4",
-      "name" => "Bkm Kitap",
-      "image" => "http://www.akgenseeds.com/app/assets/img/6.png",
-      "subname" => "bkmkitap"
-    ],
-    [
-      "id" => "5",
-      "name" => "Kitap seç",
-      "image" => "http://www.akgenseeds.com/app/assets/img/7.png",
-      "subname" => "kitapsec"
-    ],
-    [
-      "id" => "6",
-      "name" => "Ucuz Kitap Al",
-      "image" => "http://www.akgenseeds.com/app/assets/img/8.png",
-      "subname" => "ucuzkitapal"
-    ],
-    [
-      "id" => "7",
       "name" => "Amazon",
       "image" => "http://www.akgenseeds.com/app/assets/img/9.png",
       "subname" => "amazon"
     ],
     [
-      "id" => "8",
+      "id" => "1",
+      "name" => "Bkm Kitap",
+      "image" => "http://www.akgenseeds.com/app/assets/img/6.png",
+      "subname" => "bkmkitap"
+    ],
+    [
+      "id" => "2",
+      "name" => "D&R Store",
+      "image" => "http://www.akgenseeds.com/app/assets/img/1.png",
+      "subname" => "dr"
+    ],
+    [
+      "id" => "3",
+      "name" => "Hepsiburada",
+      "image" => "http://www.akgenseeds.com/app/assets/img/2.png",
+      "subname" => "hepsiburada"
+    ],
+    [
+      "id" => "4",
+      "name" => "Idefix",
+      "image" => "http://www.akgenseeds.com/app/assets/img/3.png",
+      "subname" => "idefix"
+    ],
+    [
+      "id" => "5",
+      "name" => "Kidega",
+      "image" => "http://www.akgenseeds.com/app/assets/img/5.png",
+      "subname" => "kidega"
+    ],
+    [
+      "id" => "6",
+      "name" => "Kitabevimiz",
+      "image" => "http://www.akgenseeds.com/app/assets/img/14.png",
+      "subname" => "kitabevimiz"
+    ],
+    [
+      "id" => "7",
       "name" => "Kitap Koala",
       "image" => "http://www.akgenseeds.com/app/assets/img/10.png",
       "subname" => "kitapkoala"
     ],
     [
-      "id" => "9",
-      "name" => "Nobel Kitap",
-      "image" => "http://www.akgenseeds.com/app/assets/img/11.png",
-      "subname" => "nobelkitap"
+      "id" => "8",
+      "name" => "Kitap seç",
+      "image" => "http://www.akgenseeds.com/app/assets/img/7.png",
+      "subname" => "kitapsec"
     ],
     [
-      "id" => "10",
+      "id" => "9",
       "name" => "Kitap Sihirbazı",
       "image" => "http://www.akgenseeds.com/app/assets/img/12.png",
       "subname" => "kitapsihirbazi"
     ],
     [
+      "id" => "10",
+      "name" => "Nobel Kitap",
+      "image" => "http://www.akgenseeds.com/app/assets/img/11.png",
+      "subname" => "nobelkitap"
+    ],
+    [
       "id" => "11",
+      "name" => "Pandora",
+      "image" => "http://www.akgenseeds.com/app/assets/img/4.png",
+      "subname" => "pandora"
+    ],
+    [
+      "id" => "12",
       "name" => "Pelikan Kitap Evi",
       "image" => "http://www.akgenseeds.com/app/assets/img/13.png",
       "subname" => "pelikankitabevi"
     ],
     [
-      "id" => "12",
-      "name" => "Hepsiburada",
-      "image" => "http://www.akgenseeds.com/app/assets/img/2.png",
-      "subname" => "hb"
+      "id" => "13",
+      "name" => "Ucuz Kitap Al",
+      "image" => "http://www.akgenseeds.com/app/assets/img/8.png",
+      "subname" => "ucuzkitapal"
     ]
   ];
 
@@ -255,7 +261,7 @@ class AppController extends V4Controller {
       ];
     }
 
-    $json = self::_query_json_template(200, "Tüm Aramalar", $barcodes);
+    $json = self::_query_json_template(200, "Tüm Aramalar", $datas);
     return $this->render(["text" => $json], ["content_type" => "application/json"]);
   }
 

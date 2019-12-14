@@ -236,7 +236,7 @@ class KitapsihirbaziController extends V4Controller {
      if (!isset($output[0][0])) {
       $_authors[$key] = NULL;
     } else {
-      $_authors[$key] = $value;
+      $_authors[$key] = $output[2][0];
     }
   }
 

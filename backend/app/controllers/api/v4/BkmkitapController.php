@@ -147,7 +147,6 @@ class BkmkitapController extends V4Controller {
     // $file = file_get_contents($query_url, false, $context);
       $file = file_get_contents($query_url);
 
-
       preg_match_all("'<span class=\"imgInner\">\s*<img data-type=\"\" src=\"(.*?)\"'si", $file, $images);
       $_images = $images[1];
 
