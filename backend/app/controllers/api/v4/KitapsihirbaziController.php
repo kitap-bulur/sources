@@ -155,7 +155,6 @@ class KitapsihirbaziController extends V4Controller {
     $_publishers = $publisher[2];
 
     preg_match_all("'<div class=\"col2\">(.*?)</div>\s*<div class=\"col3\">'si", $file, $all_prices_old);
-    $_all_prices_old = $all_prices_old[1];
 
     $_prices_old = [];
     foreach ($_all_prices_old as $key => $value) {
@@ -246,7 +245,7 @@ class KitapsihirbaziController extends V4Controller {
   preg_match_all("'<span class=\"price price_sale convert_cur\" data-price=\"(.*?)\" data-cur-code=\"(.*?)\">'si", $file, $prices);
   $_prices = $prices[1];
 
-  preg_match_all("'<span class=\"price price_list convert_cur\" data-price=\"(.*?)\" data-cur-code=\"(.*?)\"></span>'si", $file, $prices_old);
+  preg_match_all("'<span class=\"price price_list convert_cur\" data-price=\"(.*?)\" data-cur-code=\"(.*?)\">(.*?)</span>'si", $file, $prices_old);
   $_prices_old = $prices_old[1];
 
   foreach ($_prices_old as $key => $value) {
